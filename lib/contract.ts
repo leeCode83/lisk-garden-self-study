@@ -31,7 +31,7 @@ export function parsePlantData(rawPlant: any): Plant {
     }
 }
 
-export async function plantSeed(client: any, account: any){
+export async function plantSeed(client: any, account: any) {
     const tx = prepareContractCall({
         contract: getContract({
             client,
@@ -41,6 +41,85 @@ export async function plantSeed(client: any, account: any){
         method: 'function plantSeed() external payable returns (uint256)',
         params: [],
         value: toWei(PLANT_PRICE)
+    });
+
+    const result = await sendTransaction({
+        account,
+        transaction: tx
+    });
+
+    await waitForReceipt(result);
+
+    return result;
+}
+
+export async function waterPlant(client: any, account: any, plantId: bigint) {
+    const tx = prepareContractCall({
+        contract: getContract({
+            client,
+            chain: liskSepolia,
+            address: LISK_GARDEN_ADDRESS
+        }),
+        method: 'function waterPlant(uint256 _plantId) external',
+        params: [plantId]
+    });
+
+    const result = await sendTransaction({
+        account,
+        transaction: tx
+    });
+
+    await waitForReceipt(result);
+
+    return result;
+}
+
+export async function calculateWaterLevel(client: any, plantId: bigint): Promise<number> {
+    const contract = getContract({
+        client,
+        chain: liskSepolia,
+        address: LISK_GARDEN_ADDRESS
+    })
+
+    const waterLevel = await readContract({
+        contract: contract,
+        method: 'function calculateWaterLevel(uint256 _plantId) public returns(uint8)',
+        params: [plantId]
+    });
+
+    return Number(waterLevel);
+}
+
+export async function updatePlantStage(client: any, account: any, plantId: bigint) {
+    const tx = prepareContractCall({
+        contract: getContract({
+            client,
+            chain: liskSepolia,
+            address: LISK_GARDEN_ADDRESS
+        }),
+        method: 'function updatePlantStage(uint256 _plantId) public',
+        params: [plantId]
+    });
+
+    const result = await sendTransaction({
+        account,
+        transaction: tx
+    });
+
+    await waitForReceipt(result);
+
+    return result;
+}
+
+export async function harvestPlant(client: any, account: any, plantId: bigint) {
+    const tx = prepareContractCall({
+        contract: getContract({
+            client,
+            chain: liskSepolia,
+            address: LISK_GARDEN_ADDRESS
+        }),
+        method: 'function harvestPlant(uint256 _plantId) external',
+        params: [plantId]
     });
 
     const result = await sendTransaction({

@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react'
 import { useActiveAccount, usePanna } from 'panna-sdk'
-import { LISK_GARDEN_ADDRESS } from '@/lib/contract'
+import { LISK_GARDEN_ADDRESS } from '@/types/contracts'
 
 /**
  * Hook to get the Panna client and active account
